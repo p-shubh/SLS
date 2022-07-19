@@ -2,14 +2,17 @@ package main
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 type sls struct {
-	Unique_id  int    `unique_id`
-	Short_link string `short_link`
-	Long_link  string `ling_link "binding:"required"`
+	Unique_id  int       `unique_id`
+	Short_link string    `short_link`
+	Long_link  string    `ling_link "binding:"requTired"`
+	Timer      time.Time `timer`
+	ExpiresIn  int64     `ezpires_in`
 }
 
 var DB *sql.DB

@@ -1,9 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	layoutISO = "15:04:05"
+	layoutUS  = "January 2, 2006"
 )
 
 func create(c *gin.Context) {
@@ -11,7 +18,15 @@ func create(c *gin.Context) {
 	reqBody := sls{}
 
 	// s:=(&reqBody)
-	c.Bind(&reqBody)
+	err := c.Bind(&reqBody)
+	if err != nil {
+		res := gin.H{
+			"message": "invalid req body",
+		}
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	time := time.Now().Add(time.Minute * time.Duration(reqBody.ExpiresIn))
 
 	if reqBody.Long_link == "" {
 		res := gin.H{
@@ -19,16 +34,9 @@ func create(c *gin.Context) {
 		}
 		c.JSON(http.StatusBadRequest, res)
 	} else {
-		// res := gin.H{
-		// 	"status": "statusOK",
-		// 	"value":  reqBody.Long_link,
-		// }
-		// c.JSON(http.StatusOK, res)
-
-		// sqlStatement := (`insert into test (long_link) values ('$1')`)
 
 		insert, _ := DB.Query(
-			"INSERT INTO test (long_link) VALUES ($1)", reqBody.Long_link)
+			"INSERT INTO test (long_link,timer) VALUES ($1,$2)", reqBody.Long_link, time)
 
 		// if there is an error inserting, handle it
 		if insert == nil {
@@ -43,11 +51,13 @@ func create(c *gin.Context) {
 
 		// defer insert.Close()
 
-		sqlStatement3 := `SELECT unique_id FROM test where long_link = $1`
+		sqlStatement3 := `SELECT unique_id,timer FROM test where long_link = $1`
 
 		row3 := DB.QueryRow(sqlStatement3, reqBody.Long_link)
 
-		err3 := row3.Scan(&reqBody.Unique_id)
+		err3 := row3.Scan(&reqBody.Unique_id, &reqBody.Timer)
+
+		fmt.Println(reqBody.Timer)
 
 		// reqBody.Short_link = ("localhost:8080/" + strconv.Itoa(reqBody.Unique_id))
 

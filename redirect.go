@@ -18,6 +18,8 @@ func redirect(c *gin.Context) {
 
 	// strId._ := strconv.Atoi(id)
 
+	time_expire(c)
+
 	sqlStatement := `select long_link from test where unique_id = $1`
 
 	// c.Query.row3(sqlStatement,id)

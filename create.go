@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	layoutISO = "15:04:05"
-	layoutUS  = "January 2, 2006"
+	LayoutISO = "15:04:05"
+	LayoutUS  = "January 2, 2006"
 )
 
 func create(c *gin.Context) {

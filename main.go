@@ -12,7 +12,7 @@ type sls struct {
 	Short_link string    `short_link`
 	Long_link  string    `ling_link "binding:"requTired"`
 	Timer      time.Time `timer`
-	ExpiresIn  int64     `ezpires_in`
+	ExpiresIn  int64     `expires_in`
 }
 
 var DB *sql.DB
